@@ -1,0 +1,39 @@
+{
+    "name": "ludora-back",
+    "version": "1.0.0",
+    "description": "Ludora Backend API with Prisma",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js",
+        "db:migrate": "prisma migrate dev",
+        "db:studio": "prisma studio",
+        "db:seed": "node prisma/seed.js",
+        "db:reset": "prisma migrate reset"
+    },
+    "dependencies": {
+        "@prisma/client": "^5.6.0",
+        "bcryptjs": "^2.4.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "express-rate-limit": "^7.1.5",
+        "helmet": "^7.1.0",
+        "joi": "^17.11.0",
+        "jsonwebtoken": "^9.0.2",
+        "swagger-jsdoc": "^6.2.8",
+        "swagger-ui-express": "^5.0.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1",
+        "prisma": "^5.6.0"
+    },
+    "keywords": [
+        "api",
+        "prisma",
+        "express",
+        "javascript"
+    ],
+    "author": "",
+    "license": "ISC"
+}

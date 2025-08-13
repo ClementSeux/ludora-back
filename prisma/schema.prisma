@@ -1,0 +1,149 @@
+// Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid()) @map("id_user")
+  password  String
+  createdAt DateTime @default(now()) @map("create_date")
+
+  // Foreign keys
+  roleId   String  @map("id_role")
+  parentId String? @map("parents_id")
+  schoolId String? @map("school")
+
+  // Relations
+  role     Role    @relation(fields: [roleId], references: [id])
+  parent   User?   @relation("UserParent", fields: [parentId], references: [id])
+  children User[]  @relation("UserParent")
+  school   School? @relation(fields: [schoolId], references: [id])
+
+  // Personal info relation
+  personalInfo UserPersonalInfo?
+
+  // Classes created by this user (teachers/directors)
+  createdClasses Class[]
+
+  // Many-to-many with classes (for students)
+  userClasses UserClass[]
+
+  @@map("User")
+}
+
+model UserPersonalInfo {
+  id        String  @id @default(cuid()) @map("id_user_info")
+  name      String
+  firstName String  @map("first_name")
+  email     String  @unique
+  phone     String?
+  image     String?
+  city      String?
+  zipCode   String? @map("zipCode")
+
+  // One-to-one with User
+  userId String @unique @map("id_user")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("User_Personal_Info")
+}
+
+model Role {
+  id        String   @id @default(cuid()) @map("id_role")
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("create_date")
+
+  // Relations
+  users User[]
+
+  @@map("Role")
+}
+
+model School {
+  id        String   @id @default(cuid()) @map("id_school")
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("create_date")
+  city      String?
+  zipCode   String?  @map("zipcode")
+
+  // Relations
+  users   User[]
+  classes Class[]
+
+  @@map("School")
+}
+
+model Class {
+  id        String   @id @default(cuid()) @map("id_classe")
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("create_date")
+
+  // Foreign keys
+  createdByUserId String  @map("created_by_user")
+  schoolId        String?
+
+  // Relations
+  createdBy User    @relation(fields: [createdByUserId], references: [id])
+  school    School? @relation(fields: [schoolId], references: [id])
+
+  // Many-to-many with users (students)
+  userClasses UserClass[]
+
+  @@map("Class")
+}
+
+model Activity {
+  id   String @id @default(cuid()) @map("id_activity")
+  name String @unique
+
+  // Foreign keys
+  themeId String @map("theme")
+
+  // Relations
+  theme Theme @relation(fields: [themeId], references: [id])
+
+  @@map("Activity")
+}
+
+model Theme {
+  id   String @id @default(cuid()) @map("id_theme")
+  name String @unique
+
+  // Foreign keys
+  domainId String? @map("domain")
+
+  // Relations
+  domain     Domain?    @relation(fields: [domainId], references: [id])
+  activities Activity[]
+
+  @@map("Theme")
+}
+
+model Domain {
+  id   String @id @default(cuid()) @map("id_domain")
+  name String @unique
+
+  // Relations
+  themes Theme[]
+
+  @@map("Domain")
+}
+
+// Junction table for User-Class many-to-many relationship
+model UserClass {
+  id      String @id @default(cuid())
+  userId  String @map("user_id")
+  classId String @map("class_id")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, classId])
+  @@map("User_Class")
+}

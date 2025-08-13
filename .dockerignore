@@ -1,0 +1,34 @@
+# Ignore Docker files in production builds
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Development files
+*.md
+.git
+.gitignore
+
+# Node modules (will be installed in container)
+node_modules
+npm-debug.log*
+
+# Environment files (should be handled by container env vars)
+.env*
+
+# Test files
+test/
+tests/
+**/*.test.js
+**/*.spec.js
+
+# Development tools
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/

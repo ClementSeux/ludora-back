@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+    # PostgreSQL Database
+    postgres:
+        image: postgres:15-alpine
+        container_name: ludora-postgres
+        environment:
+            POSTGRES_DB: ludora
+            POSTGRES_USER: ludora_user
+            POSTGRES_PASSWORD: ludora_password123
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ludora_user -d ludora"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    # Ludora API
+    api:
+        build: .
+        container_name: ludora-api
+        environment:
+            NODE_ENV: production
+            PORT: 3000
+            DATABASE_URL: "postgresql://ludora_user:ludora_password123@postgres:5432/ludora?schema=public"
+            JWT_SECRET: "super-secret-jwt-key-for-production-change-this"
+            JWT_EXPIRES_IN: "7d"
+        ports:
+            - "3000:3000"
+        depends_on:
+            postgres:
+                condition: service_healthy
+        restart: unless-stopped
+
+    # Prisma Studio (optional)
+    studio:
+        build: .
+        container_name: ludora-studio
+        environment:
+            DATABASE_URL: "postgresql://ludora_user:ludora_password123@postgres:5432/ludora?schema=public"
+        ports:
+            - "5555:5555"
+        command: npx prisma studio --port 5555 --hostname 0.0.0.0
+        depends_on:
+            - postgres
+        profiles:
+            - studio
+
+volumes:
+    postgres_data:
