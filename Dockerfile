@@ -1,20 +1,24 @@
 # Use Node.js 18 LTS
 FROM node:18-alpine
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl1.1-compat
+
 # Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY prisma ./prisma/
 
 # Install dependencies
 RUN npm ci --only=production
 
+# Generate Prisma client for Alpine Linux
+RUN npx prisma generate
+
 # Copy source code
 COPY . .
-
-# Generate Prisma client
-RUN npx prisma generate
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
