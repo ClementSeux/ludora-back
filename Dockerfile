@@ -1,5 +1,11 @@
-# Use Node.js 18 LTS
-FROM node:18-alpine
+# Use Node.js 18 LTS with Debian (plus compatible avec Prisma)
+FROM node:18-slim
+
+# Install dependencies required for Prisma and system
+RUN apt-get update && apt-get install -y \
+    openssl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install required dependencies for Prisma
 RUN apk add --no-cache openssl
@@ -21,8 +27,8 @@ RUN npx prisma generate
 COPY . .
 
 # Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+RUN groupadd -g 1001 nodejs
+RUN useradd -r -u 1001 -g nodejs nextjs
 
 # Change ownership of the app directory
 RUN chown -R nextjs:nodejs /app
