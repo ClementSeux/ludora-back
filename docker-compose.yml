@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-    # PostgreSQL Database
+    # PostgreSQL Database (Internal Docker network only - no port exposure)
     postgres:
         image: postgres:15-alpine
         container_name: ludora-postgres
@@ -9,11 +9,12 @@ services:
             POSTGRES_DB: ludora
             POSTGRES_USER: ludora_user
             POSTGRES_PASSWORD: ludora_password123
-        ports:
-            - "5432:5432"
+        # No ports exposed externally - only accessible within Docker network
         volumes:
             - postgres_data:/var/lib/postgresql/data
             - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - ludora-network
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U ludora_user -d ludora"]
             interval: 30s
@@ -31,10 +32,12 @@ services:
             JWT_SECRET: "super-secret-jwt-key-for-production-change-this"
             JWT_EXPIRES_IN: "7d"
         ports:
-            - "3000:3000"
+            - "8080:3000"
         depends_on:
             postgres:
                 condition: service_healthy
+        networks:
+            - ludora-network
         restart: unless-stopped
 
     # Prisma Studio (optional)
@@ -44,12 +47,19 @@ services:
         environment:
             DATABASE_URL: "postgresql://ludora_user:ludora_password123@postgres:5432/ludora?schema=public"
         ports:
-            - "5555:5555"
+            - "5556:5555"
         command: npx prisma studio --port 5555 --hostname 0.0.0.0
         depends_on:
             - postgres
+        networks:
+            - ludora-network
         profiles:
             - studio
+
+# Docker network for internal communication
+networks:
+    ludora-network:
+        driver: bridge
 
 volumes:
     postgres_data:

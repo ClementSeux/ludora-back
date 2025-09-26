@@ -161,11 +161,47 @@ sudo ufw allow 80
 sudo ufw allow 443
 sudo ufw allow 3000
 
+# Allow from specific IP ranges (if needed)
+sudo ufw allow from any to any port 3000
+
+# Check firewall status
+sudo ufw status
+
 # Enable firewall
 sudo ufw enable
 ```
 
-### **Nginx Reverse Proxy (Optional)**
+### **Cloud Provider Firewall (Critical!)**
+
+⚠️ **Most Important**: Your VM's cloud provider firewall is likely blocking external access to port 3000.
+
+#### **Linode/Akamai Cloud (Most Likely)**
+Based on your IP (172.233.255.18), this appears to be a Linode server:
+1. Go to **Linode Cloud Manager** → **Networking** → **Firewalls**
+2. Create or edit firewall rule
+3. Add **Inbound Rule**: Protocol: TCP, Port: 3000, Source: All IPv4/IPv6
+4. Apply to your Linode instance
+
+#### **AWS EC2 Security Groups**
+- Add inbound rule: Port 3000, Source: 0.0.0.0/0 (or your IP range)
+
+#### **Google Cloud Firewall Rules**
+```bash
+gcloud compute firewall-rules create allow-ludora-api \
+    --allow tcp:3000 \
+    --source-ranges 0.0.0.0/0 \
+    --description "Allow Ludora API access"
+```
+
+#### **Azure Network Security Groups**
+- Add inbound security rule: Port 3000, Source: Any, Destination: Any
+
+#### **Alternative: Use Standard Ports (Recommended)**
+Instead of opening port 3000, use Nginx on port 80 (usually open by default):
+
+### **Nginx Reverse Proxy (Recommended Solution)**
+
+**This is the best solution since port 80 is usually open by default on cloud providers:**
 
 ```bash
 # Install Nginx
@@ -180,7 +216,7 @@ sudo nano /etc/nginx/sites-available/ludora-api
 ```nginx
 server {
     listen 80;
-    server_name your-domain.com your-vm-ip;
+    server_name 172.233.255.18;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -199,8 +235,13 @@ server {
 ```bash
 # Enable site
 sudo ln -s /etc/nginx/sites-available/ludora-api /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default
 sudo nginx -t
-sudo systemctl reload nginx
+sudo systemctl restart nginx
+sudo systemctl enable nginx
+
+# Test with port 80
+curl http://172.233.255.18/health
 ```
 
 ## 📊 Monitoring & Maintenance
