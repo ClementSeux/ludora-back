@@ -7,9 +7,6 @@ RUN apt-get update && apt-get install -y \
   ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-# Install required dependencies for Prisma
-RUN apk add --no-cache openssl
-
 # Set working directory
 WORKDIR /app
 
