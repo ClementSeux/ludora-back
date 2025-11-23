@@ -176,16 +176,20 @@ sudo ufw enable
 ⚠️ **Most Important**: Your VM's cloud provider firewall is likely blocking external access to port 3000.
 
 #### **Linode/Akamai Cloud (Most Likely)**
+
 Based on your IP (172.233.255.18), this appears to be a Linode server:
+
 1. Go to **Linode Cloud Manager** → **Networking** → **Firewalls**
 2. Create or edit firewall rule
 3. Add **Inbound Rule**: Protocol: TCP, Port: 3000, Source: All IPv4/IPv6
 4. Apply to your Linode instance
 
 #### **AWS EC2 Security Groups**
-- Add inbound rule: Port 3000, Source: 0.0.0.0/0 (or your IP range)
+
+-   Add inbound rule: Port 3000, Source: 0.0.0.0/0 (or your IP range)
 
 #### **Google Cloud Firewall Rules**
+
 ```bash
 gcloud compute firewall-rules create allow-ludora-api \
     --allow tcp:3000 \
@@ -194,9 +198,11 @@ gcloud compute firewall-rules create allow-ludora-api \
 ```
 
 #### **Azure Network Security Groups**
-- Add inbound security rule: Port 3000, Source: Any, Destination: Any
+
+-   Add inbound security rule: Port 3000, Source: Any, Destination: Any
 
 #### **Alternative: Use Standard Ports (Recommended)**
+
 Instead of opening port 3000, use Nginx on port 80 (usually open by default):
 
 ### **Nginx Reverse Proxy (Recommended Solution)**

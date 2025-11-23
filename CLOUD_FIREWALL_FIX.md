@@ -19,6 +19,7 @@ sudo nano /etc/nginx/sites-available/ludora-api
 ```
 
 **Add this configuration:**
+
 ```nginx
 server {
     listen 80;
@@ -35,6 +36,7 @@ server {
 ```
 
 **Enable and start:**
+
 ```bash
 sudo ln -s /etc/nginx/sites-available/ludora-api /etc/nginx/sites-enabled/
 sudo rm /etc/nginx/sites-enabled/default
@@ -44,6 +46,7 @@ sudo systemctl enable nginx
 ```
 
 **Test external access:**
+
 ```bash
 # From anywhere
 curl http://172.233.255.18/health
@@ -60,9 +63,9 @@ Your IP `172.233.255.18` suggests Linode hosting:
 2. **Networking → Firewalls**
 3. **Create new firewall rule or edit existing**
 4. **Add Inbound Rule:**
-   - Protocol: TCP
-   - Port: 3000
-   - Source: All IPv4 (0.0.0.0/0) and All IPv6 (::/0)
+    - Protocol: TCP
+    - Port: 3000
+    - Source: All IPv4 (0.0.0.0/0) and All IPv6 (::/0)
 5. **Apply to your Linode instance**
 
 #### **For other providers:**
@@ -103,14 +106,16 @@ curl http://127.0.0.1:3000/health
 ## 🌐 **After Setup - Your API URLs**
 
 ### **With Nginx (Port 80):**
-- API: `http://172.233.255.18`
-- Health: `http://172.233.255.18/health`
-- Swagger: `http://172.233.255.18/api-docs`
+
+-   API: `http://172.233.255.18`
+-   Health: `http://172.233.255.18/health`
+-   Swagger: `http://172.233.255.18/api-docs`
 
 ### **Direct Port 3000 (if cloud firewall configured):**
-- API: `http://172.233.255.18:3000`
-- Health: `http://172.233.255.18:3000/health`
-- Swagger: `http://172.233.255.18:3000/api-docs`
+
+-   API: `http://172.233.255.18:3000`
+-   Health: `http://172.233.255.18:3000/health`
+-   Swagger: `http://172.233.255.18:3000/api-docs`
 
 ## 📋 **Which solution would you prefer?**
 

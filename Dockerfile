@@ -3,9 +3,9 @@ FROM node:18-slim
 
 # Install dependencies required for Prisma and system
 RUN apt-get update && apt-get install -y \
-    openssl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+  openssl \
+  ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install required dependencies for Prisma
 RUN apk add --no-cache openssl

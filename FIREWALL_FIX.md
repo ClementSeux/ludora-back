@@ -47,6 +47,7 @@ curl http://127.0.0.1:3000/api-docs
 Your VM appears to be on a cloud provider. You need to configure their firewall too:
 
 #### **If using Linode/Akamai Cloud:**
+
 ```bash
 # Check if Linode firewall is enabled
 # Go to Linode Cloud Manager > Networking > Firewalls
@@ -54,11 +55,13 @@ Your VM appears to be on a cloud provider. You need to configure their firewall 
 ```
 
 #### **If using AWS:**
-- Go to EC2 > Security Groups
-- Edit inbound rules
-- Add: Type: Custom TCP, Port: 3000, Source: 0.0.0.0/0
+
+-   Go to EC2 > Security Groups
+-   Edit inbound rules
+-   Add: Type: Custom TCP, Port: 3000, Source: 0.0.0.0/0
 
 #### **If using Google Cloud:**
+
 ```bash
 gcloud compute firewall-rules create allow-ludora-api \
     --allow tcp:3000 \
@@ -66,8 +69,9 @@ gcloud compute firewall-rules create allow-ludora-api \
 ```
 
 #### **If using Azure:**
-- Go to Network Security Groups
-- Add inbound rule: Port 3000, Source: Any
+
+-   Go to Network Security Groups
+-   Add inbound rule: Port 3000, Source: Any
 
 ### **4. Use Nginx Reverse Proxy (Recommended)**
 
@@ -82,6 +86,7 @@ sudo nano /etc/nginx/sites-available/ludora-api
 ```
 
 **Add this configuration:**
+
 ```nginx
 server {
     listen 80;
@@ -102,6 +107,7 @@ server {
 ```
 
 **Enable the configuration:**
+
 ```bash
 # Enable site
 sudo ln -s /etc/nginx/sites-available/ludora-api /etc/nginx/sites-enabled/
@@ -120,8 +126,9 @@ sudo systemctl enable nginx
 ```
 
 **Now access your API at:**
-- `http://172.233.255.18/health`
-- `http://172.233.255.18/api-docs`
+
+-   `http://172.233.255.18/health`
+-   `http://172.233.255.18/api-docs`
 
 ### **5. Quick Diagnostic Commands**
 
@@ -170,10 +177,10 @@ curl http://localhost:3000/health
 
 After fixing the firewall, you should be able to access:
 
-- **API**: `http://172.233.255.18:3000` (if port 3000 is open)
-- **With Nginx**: `http://172.233.255.18` (port 80)
-- **Health Check**: `http://172.233.255.18/health`
-- **Swagger Docs**: `http://172.233.255.18/api-docs`
+-   **API**: `http://172.233.255.18:3000` (if port 3000 is open)
+-   **With Nginx**: `http://172.233.255.18` (port 80)
+-   **Health Check**: `http://172.233.255.18/health`
+-   **Swagger Docs**: `http://172.233.255.18/api-docs`
 
 ## 🆘 **Still Not Working?**
 
@@ -181,10 +188,10 @@ After fixing the firewall, you should be able to access:
 2. **Contact your hosting provider** about firewall policies
 3. **Try using a different port** (like 8080): edit your .env file
 4. **Use SSH tunneling** as a temporary solution:
-   ```bash
-   ssh -L 3000:localhost:3000 username@172.233.255.18
-   # Then access http://localhost:3000 on your local machine
-   ```
+    ```bash
+    ssh -L 3000:localhost:3000 username@172.233.255.18
+    # Then access http://localhost:3000 on your local machine
+    ```
 
 ## 📞 **Most Likely Solution**
 
