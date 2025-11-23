@@ -91,10 +91,16 @@ router.post(
             });
 
             // Generate JWT token
+            const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
+            console.log("JWT Config:", { 
+                secret: process.env.JWT_SECRET ? "***SET***" : "MISSING",
+                expiresIn: expiresIn,
+                expiresInType: typeof expiresIn 
+            });
             const token = jwt.sign(
                 { userId: user.id },
                 process.env.JWT_SECRET,
-                { expiresIn: process.env.JWT_EXPIRES_IN }
+                { expiresIn: expiresIn }
             );
 
             // Remove password from response
@@ -188,10 +194,16 @@ router.post("/login", validateRequest(authSchemas.login), async (req, res) => {
         }
 
         // Generate JWT token
+        const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
+        console.log("JWT Config:", { 
+            secret: process.env.JWT_SECRET ? "***SET***" : "MISSING",
+            expiresIn: expiresIn,
+            expiresInType: typeof expiresIn 
+        });
         const token = jwt.sign(
             { userId: userPersonalInfo.user.id },
             process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN }
+            { expiresIn: expiresIn }
         );
 
         // Remove password from response
