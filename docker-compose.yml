@@ -29,7 +29,7 @@ services:
             PORT: 3000
             DATABASE_URL: "postgresql://ludora_user:ludora_password123@postgres:5432/ludora?schema=public"
             JWT_SECRET: "super-secret-jwt-key-for-production-change-this"
-            JWT_EXPIRES_IN: "7d"
+            JWT_EXPIRES_IN: 7d
         ports:
             - "8080:3000"
         depends_on:
