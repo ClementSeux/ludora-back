@@ -12,7 +12,6 @@ services:
         # No ports exposed externally - only accessible within Docker network
         volumes:
             - postgres_data:/var/lib/postgresql/data
-            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         networks:
             - ludora-network
         healthcheck:
