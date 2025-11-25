@@ -18,7 +18,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://172.233.255.18:3000",
+			"value": "http://172.233.255.18:8080",
 			"type": "string"
 		},
 		{
